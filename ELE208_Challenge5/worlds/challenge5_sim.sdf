@@ -1,0 +1,940 @@
+<?xml version='1.0' encoding='utf-8'?>
+<sdf version="1.9">
+    <world name="challenge5_sim">
+        <!-- Systemmoduler, for håndtering av fysikk, brukerkommandoer og visualisering, de er standardkomponenter i Gazebo -->
+        <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
+        <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands" />
+        <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
+        <!-- Gravitasjon -->
+        <gravity>0 0 -9.81</gravity>
+        <!-- Belysning -->
+        <light name="sun" type="directional">
+            <pose>0 0 10 0 0 0</pose>
+            <cast_shadows>true</cast_shadows>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <direction>-0.5 0.1 -1</direction>
+        </light>
+        <!-- Gulv -->
+        <!-- Gulvet legges 0.8 m under origo, det er ikke et prosjektkrav, skaper visuel realisme i miljøet -->
+        <model name="ground_plane">
+            <static>true</static>
+            <pose>0 0 -0.8 0 0 0</pose>
+            <link name="ground_link">
+                <collision name="ground_collision">
+                    <!-- Gulvets fysiske kollisjonsgeometri mellom objekter -->
+                    <geometry>
+                        <plane>
+                            <normal>0 0 1</normal>
+                            <size>15 15</size>
+                        </plane>
+                    </geometry>
+                </collision>
+                <visual name="ground_visual">
+                    <!-- Gulvets visuelle geometri på 15 x 15 meter-->
+                    <geometry>
+                        <plane>
+                            <normal>0 0 1</normal>
+                            <size>15 15</size>
+                        </plane>
+                    </geometry>
+                    <material>
+                        <ambient>0.8 0.8 0.8 1</ambient>
+                        <diffuse>0.8 0.8 0.8 1</diffuse>
+                    </material>
+                </visual>
+            </link>
+        </model>
+        <!-- Robotmiljøets komponenter er definert under -->
+        <!-- Transportbånd/Conveyor Belt -->
+        <!-- Dimensjoner basert på AutoCAD-tegning -->
+        <!-- Overflaten ligger ved z = 0 som i MATLAB for å ha felles referanseplan -->
+        <model name="conveyor_belt">
+            <static>true</static>
+            <pose>0 -0.575 -0.05 0 0 0</pose>
+            <!-- Tverrsnitt av transportbåndet, 
+                                                det er egentlig uten tykkelse i matlab,     
+                                                men for visualisering er det lagt til 0.1m
+                                                derfor forskyver vi senteret ned 0.05m for å beholde z = 0 -->
+            <link name="belt_link">
+                <visual name="belt_visual">
+                    <!-- Båndets visuelle geometri -->
+                    <geometry>
+                        <box>
+                            <size>5.0 0.4 0.1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.15 0.15 0.15 1</ambient>
+                        <diffuse>0.15 0.15 0.15 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="belt_collision">
+                    <!-- Båndets fysiske kollisjonsgeometri -->
+                    <geometry>
+                        <box>
+                            <size>5.0 0.4 0.1</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <!-- Transportbåndets fire bein (antatt), alle 4 har lik struktur, men ulik posisjon og navn-->
+        <!-- Dimensjoner og plassering basert på miljøets geometri, de er lagt til for visualiseringens del, 
+    da miljøet vårt ikke tok hensyn til de tidligere -->
+        <model name="belt_leg_1">
+            <static>true</static>
+            <pose>-2.3 -0.435 -0.45 0 0 0</pose>
+            <link name="leg_link">
+                <visual name="leg_visual">
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 0.7</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="leg_collision">
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 0.7</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <model name="belt_leg_2">
+            <static>true</static>
+            <pose>-2.3 -0.715 -0.45 0 0 0</pose>
+            <link name="leg_link">
+                <visual name="leg_visual">
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 0.7</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="leg_collision">
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 0.7</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <model name="belt_leg_3">
+            <static>true</static>
+            <pose>2.3 -0.435 -0.45 0 0 0</pose>
+            <link name="leg_link">
+                <visual name="leg_visual">
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 0.7</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="leg_collision">
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 0.7</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <model name="belt_leg_4">
+            <static>true</static>
+            <pose>2.3 -0.715 -0.45 0 0 0</pose>
+            <link name="leg_link">
+                <visual name="leg_visual">
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 0.7</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="leg_collision">
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 0.7</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <!-- Robotfundament med lengde og bredde fra AutoCAD.
+     Tykkelsen er valgt for visualisering. -->
+        <!-- base/monteringsplate -->
+        <model name="robot_mounting_plate">
+            <static>true</static>
+            <pose>0 0.125 -0.05 0 0 0</pose>
+            <!-- Basen forsyves i positiv y-retning sånn at roboten står nærmere 
+                                            kanten mot transportbåndet -->
+            <link name="plate_link">
+                <visual name="plate_visual">
+                    <geometry>
+                        <box>
+                            <size>1.0 0.5 0.1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.25 0.28 0.32 1</ambient>
+                        <diffuse>0.25 0.28 0.32 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="plate_collision">
+                    <geometry>
+                        <box>
+                            <size>1.0 0.5 0.1</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <!-- Sokkel som visualiserer robotens fundament ved å fylle høyden mellom gulv og base, dimensjoner er antatt -->
+        <model name="robot_pedestal">
+            <static>true</static>
+            <pose>0 0.125 -0.45 0 0 0</pose>
+            <link name="pedestal_link">
+                <visual name="pedestal_visual">
+                    <geometry>
+                        <box>
+                            <size>0.8 0.4 0.7</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.35 0.4 0.45 1</ambient>
+                        <diffuse>0.35 0.4 0.45 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="pedestal_collision">
+                    <geometry>
+                        <box>
+                            <size>0.8 0.4 0.7</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <!-- Avlastningsbord/Drop-off location -->
+        <!-- Plassering, lengde og bredde basert på MATLAB-modellen.
+     Tykkelse og bordbein er lagt til for visualisering -->
+        <model name="dropoff_table">
+            <static>true</static>
+            <pose>0 -0.975 -0.025 0 0 0</pose>
+            <!-- Bordplaten har en tykkelse på 0.05 m, senteret forskyves
+                                                    derfor ned 0.025 m for å beholde overflaten ved z = 0 -->
+            <link name="table_link">
+                <!-- Bordplate -->
+                <visual name="table_top_visual">
+                    <geometry>
+                        <box>
+                            <size>0.4 0.4 0.05</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.1 0.65 0.55 1</ambient>
+                        <diffuse>0.1 0.65 0.55 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="table_top_collision">
+                    <geometry>
+                        <box>
+                            <size>0.4 0.4 0.05</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <!-- Alle fire bordbein har lik geometri, men ulik posisjon.
+     Beinas koordinater er relative til bordets koordinatsystem,
+     slik at beina følger med om bordet flyttes -->
+                <visual name="table_leg_1_visual">
+                    <pose>-0.15 0.15 -0.4 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.75</size>
+                            <!-- Beinlengden på 0.75 m fyller høyden mellom gulvet
+                                                                og undersiden av bordplaten -->
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="table_leg_1_collision">
+                    <pose>-0.15 0.15 -0.4 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.75</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <!-- Bordbein 2 -->
+                <visual name="table_leg_2_visual">
+                    <pose>0.15 0.15 -0.4 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.75</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="table_leg_2_collision">
+                    <pose>0.15 0.15 -0.4 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.75</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <!-- Bordbein 3 -->
+                <visual name="table_leg_3_visual">
+                    <pose>-0.15 -0.15 -0.4 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.75</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="table_leg_3_collision">
+                    <pose>-0.15 -0.15 -0.4 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.75</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <!-- Bordbein 4 -->
+                <visual name="table_leg_4_visual">
+                    <pose>0.15 -0.15 -0.4 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.75</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="table_leg_4_collision">
+                    <pose>0.15 -0.15 -0.4 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.04 0.04 0.75</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <!-- Kamerasystem -->
+        <!-- Plassering tar utgangspunkt i AutoCAD og MATLAB.
+     Kamerahus, linse og stativ er forenklet for visualisering.
+     Stativets oppbygging og lokale koordinater er foreslått
+     med KI-assistanse.
+     Kameraet fungerer ikke som en aktiv sensor i Gazebo -->
+        <model name="camera_system">
+            <static>true</static>
+            <pose>-2 -0.575 1.0 0 0 0</pose>
+            <!-- Kameraets referansepunkt plasseres 1 m over
+                                                        transportbåndets senterlinje -->
+            <link name="camera_link">
+                <!-- Vertikal kamerastolpe -->
+                <visual name="camera_pole_visual">
+                    <pose>0 -0.35 -0.85 0 0 0</pose>
+                    <!-- Stolpen forskyves i negativ y-retning for å stå
+                                                            på utsiden av transportbåndet -->
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 1.9</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="camera_pole_collision">
+                    <pose>0 -0.35 -0.85 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.06 0.06 1.9</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <!-- Horisontal kameraholder mellom stolpen og kamerahuset.
+     Posisjonen er relativ til kameraets koordinatsystem -->
+                <visual name="camera_bracket_visual">
+                    <pose>0 -0.175 0.07 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.06 0.35 0.06</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.3 0.35 0.4 1</ambient>
+                        <diffuse>0.3 0.35 0.4 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="camera_bracket_collision">
+                    <pose>0 -0.175 0.07 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.06 0.35 0.06</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <!-- Kamerahuset visualiseres som en gul boks -->
+                <visual name="camera_body_visual">
+                    <pose>0 0 0.07 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.1 0.08 0.1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.95 0.75 0.05 1</ambient>
+                        <diffuse>0.95 0.75 0.05 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="camera_body_collision">
+                    <pose>0 0 0.07 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.1 0.08 0.1</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <!-- Linsen visualiseres som en sylinder på undersiden
+                av kamerahuset, med diameter på 0.04 m -->
+                <visual name="camera_lens_visual">
+                    <pose>0 0 0.01 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <radius>0.02</radius>
+                            <length>0.02</length>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <ambient>0.05 0.05 0.05 1</ambient>
+                        <diffuse>0.05 0.05 0.05 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="camera_lens_collision">
+                    <pose>0 0 0.01 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <radius>0.02</radius>
+                            <length>0.02</length>
+                        </cylinder>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <!-- Pick-up object -->
+        <!-- Objektet representeres som en kube på 100 x 100 x 100 mm.
+     Dimensjonene er antatt for visualisering -->
+        <model name="pick_object">
+            <static>true</static>
+            <!-- Objektet er stillestående i Gazebo, bevegelsen
+                                                langs transportbåndet modelleres i MATLAB -->
+            <pose>-2 -0.575 0.05 0 0 0</pose>
+            <!-- Objektet plasseres under kameraet på transportbåndet.
+                                                    Senteret løftes 0.05 m slik at undersiden ligger ved z = 0 -->
+            <link name="object_link">
+                <visual name="object_visual">
+                    <geometry>
+                        <box>
+                            <size>0.1 0.1 0.1</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.95 0.35 0.05 1</ambient>
+                        <diffuse>0.95 0.35 0.05 1</diffuse>
+                    </material>
+                </visual>
+                <collision name="object_collision">
+                    <geometry>
+                        <box>
+                            <size>0.1 0.1 0.1</size>
+                        </box>
+                    </geometry>
+                </collision>
+            </link>
+        </model>
+        <model name="challenge5_robot">
+            <link name="base_link">
+                <inertial>
+                    <pose>0 0 0 0 0 0</pose>
+                    <mass>1</mass>
+                    <inertia>
+                        <ixx>0.01</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.01</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.01</izz>
+                    </inertia>
+                </inertial>
+                <collision name="base_link_fixed_joint_lump__base_ring_collision_collision">
+                    <pose>0 0 0.012500000000000001 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.025000000000000001</length>
+                            <radius>0.11</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <visual name="base_link_fixed_joint_lump__base_ring_visual_visual">
+                    <pose>0 0 0.012500000000000001 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.025000000000000001</length>
+                            <radius>0.11</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.4375 0.474999994 0.524999976 1</diffuse>
+                        <ambient>0.4375 0.474999994 0.524999976 1</ambient>
+                    </material>
+                </visual>
+                <gravity>false</gravity>
+            </link>
+            <joint name="joint_1" type="revolute">
+                <pose relative_to="base_link">0 0 0 0 0 0</pose>
+                <parent>base_link</parent>
+                <child>link_1</child>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                    <limit>
+                        <lower>-3.1415926535897931</lower>
+                        <upper>3.1415926535897931</upper>
+                        <effort>100</effort>
+                        <velocity>2</velocity>
+                    </limit>
+                    <dynamics>
+                        <spring_reference>0</spring_reference>
+                        <spring_stiffness>0</spring_stiffness>
+                    </dynamics>
+                </axis>
+            </joint>
+            <link name="link_1">
+                <pose relative_to="joint_1">0 0 0 0 0 0</pose>
+                <inertial>
+                    <pose>0 0 0 0 0 0</pose>
+                    <mass>1</mass>
+                    <inertia>
+                        <ixx>0.01</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.01</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.01</izz>
+                    </inertia>
+                </inertial>
+                <collision name="link_1_fixed_joint_lump__rotating_base_collision_collision">
+                    <pose>0 0 0.055 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.059999999999999998</length>
+                            <radius>0.089999999999999997</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <collision name="link_1_fixed_joint_lump__base_column_collision_collision_1">
+                    <pose>0 0 0.11749999999999999 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.064999999999999988</length>
+                            <radius>0.044999999999999998</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <visual name="link_1_fixed_joint_lump__rotating_base_visual_visual">
+                    <pose>0 0 0.055 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.059999999999999998</length>
+                            <radius>0.089999999999999997</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.049999997 0.187500015 0.5625 1</diffuse>
+                        <ambient>0.049999997 0.187500015 0.5625 1</ambient>
+                    </material>
+                </visual>
+                <visual name="link_1_fixed_joint_lump__base_column_visual_visual_1">
+                    <pose>0 0 0.11749999999999999 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.064999999999999988</length>
+                            <radius>0.044999999999999998</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.099999994 0.37500003 1 1</diffuse>
+                        <ambient>0.099999994 0.37500003 1 1</ambient>
+                    </material>
+                </visual>
+                <gravity>false</gravity>
+            </link>
+            <joint name="joint_2" type="revolute">
+                <pose relative_to="link_1">0 -0.10000000000000001 0.14999999999999999 1.570796326794897 -1.5707963267948966 0</pose>
+                <parent>link_1</parent>
+                <child>link_2</child>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                    <limit>
+                        <lower>-3.1415926535897931</lower>
+                        <upper>3.1415926535897931</upper>
+                        <effort>100</effort>
+                        <velocity>2</velocity>
+                    </limit>
+                    <dynamics>
+                        <spring_reference>0</spring_reference>
+                        <spring_stiffness>0</spring_stiffness>
+                    </dynamics>
+                </axis>
+            </joint>
+            <link name="link_2">
+                <pose relative_to="joint_2">0 0 0 0 0 0</pose>
+                <inertial>
+                    <pose>0 0 0 0 0 0</pose>
+                    <mass>1</mass>
+                    <inertia>
+                        <ixx>0.01</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.01</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.01</izz>
+                    </inertia>
+                </inertial>
+                <collision name="link_2_fixed_joint_lump__shoulder_housing_collision_collision">
+                    <pose>0 0 -0.050000000000000003 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.25</length>
+                            <radius>0.074999999999999997</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <collision name="link_2_fixed_joint_lump__upper_arm_collision_collision_1">
+                    <pose>0.53000000000000003 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>1.0600000000000001</length>
+                            <radius>0.044999999999999998</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <visual name="link_2_fixed_joint_lump__shoulder_housing_visual_visual">
+                    <pose>0 0 -0.050000000000000003 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.25</length>
+                            <radius>0.074999999999999997</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.049999997 0.187500015 0.5625 1</diffuse>
+                        <ambient>0.049999997 0.187500015 0.5625 1</ambient>
+                    </material>
+                </visual>
+                <visual name="link_2_fixed_joint_lump__upper_arm_visual_visual_1">
+                    <pose>0.53000000000000003 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>1.0600000000000001</length>
+                            <radius>0.044999999999999998</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.099999994 0.37500003 1 1</diffuse>
+                        <ambient>0.099999994 0.37500003 1 1</ambient>
+                    </material>
+                </visual>
+                <gravity>false</gravity>
+            </link>
+            <joint name="joint_3" type="revolute">
+                <pose relative_to="link_2">1.0600000000000001 0 -0.10000000000000001 0 0 0</pose>
+                <parent>link_2</parent>
+                <child>link_3</child>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                    <limit>
+                        <lower>-3.1415926535897931</lower>
+                        <upper>3.1415926535897931</upper>
+                        <effort>100</effort>
+                        <velocity>2</velocity>
+                    </limit>
+                    <dynamics>
+                        <spring_reference>0</spring_reference>
+                        <spring_stiffness>0</spring_stiffness>
+                    </dynamics>
+                </axis>
+            </joint>
+            <link name="link_3">
+                <pose relative_to="joint_3">0 0 0 0 0 0</pose>
+                <inertial>
+                    <pose>0 0 0 0 0 0</pose>
+                    <mass>1</mass>
+                    <inertia>
+                        <ixx>0.01</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.01</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.01</izz>
+                    </inertia>
+                </inertial>
+                <collision name="link_3_fixed_joint_lump__elbow_housing_collision_collision">
+                    <pose>0 0 0.050000000000000003 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.25</length>
+                            <radius>0.074999999999999997</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <collision name="link_3_fixed_joint_lump__forearm_collision_collision_1">
+                    <pose>0.40000000000000002 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.80000000000000004</length>
+                            <radius>0.044999999999999998</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <visual name="link_3_fixed_joint_lump__elbow_housing_visual_visual">
+                    <pose>0 0 0.050000000000000003 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.25</length>
+                            <radius>0.074999999999999997</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.049999997 0.187500015 0.5625 1</diffuse>
+                        <ambient>0.049999997 0.187500015 0.5625 1</ambient>
+                    </material>
+                </visual>
+                <visual name="link_3_fixed_joint_lump__forearm_visual_visual_1">
+                    <pose>0.40000000000000002 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.80000000000000004</length>
+                            <radius>0.044999999999999998</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.099999994 0.37500003 1 1</diffuse>
+                        <ambient>0.099999994 0.37500003 1 1</ambient>
+                    </material>
+                </visual>
+                <gravity>false</gravity>
+            </link>
+            <joint name="joint_4" type="revolute">
+                <pose relative_to="link_3">0.80000000000000004 0 0.10000000000000001 0 0 0</pose>
+                <parent>link_3</parent>
+                <child>link_4</child>
+                <axis>
+                    <xyz>0 0 1</xyz>
+                    <limit>
+                        <lower>-3.1415926535897931</lower>
+                        <upper>3.1415926535897931</upper>
+                        <effort>100</effort>
+                        <velocity>2</velocity>
+                    </limit>
+                    <dynamics>
+                        <spring_reference>0</spring_reference>
+                        <spring_stiffness>0</spring_stiffness>
+                    </dynamics>
+                </axis>
+            </joint>
+            <link name="link_4">
+                <pose relative_to="joint_4">0 0 0 0 0 0</pose>
+                <inertial>
+                    <pose>0 0 0 0 0 0</pose>
+                    <mass>2</mass>
+                    <inertia>
+                        <ixx>0.01</ixx>
+                        <ixy>0</ixy>
+                        <ixz>0</ixz>
+                        <iyy>0.01</iyy>
+                        <iyz>0</iyz>
+                        <izz>0.01</izz>
+                    </inertia>
+                </inertial>
+                <collision name="link_4_fixed_joint_lump__wrist_housing_collision_collision">
+                    <pose>0 0 -0.050000000000000003 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.25</length>
+                            <radius>0.074999999999999997</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <collision name="link_4_fixed_joint_lump__tool_shaft_collision_collision_1">
+                    <pose>0.074999999999999997 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.14999999999999999</length>
+                            <radius>0.044999999999999998</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <collision name="link_4_fixed_joint_lump__vacuum_body_collision_collision_2">
+                    <pose>0.19650000000000001 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.092999999999999999</length>
+                            <radius>0.037999999999999999</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <collision name="link_4_fixed_joint_lump__vacuum_cup_collision_collision_3">
+                    <pose>0.253 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.02</length>
+                            <radius>0.050000000000000003</radius>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <visual name="link_4_fixed_joint_lump__wrist_housing_visual_visual">
+                    <pose>0 0 -0.050000000000000003 0 0 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.25</length>
+                            <radius>0.074999999999999997</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.049999997 0.187500015 0.5625 1</diffuse>
+                        <ambient>0.049999997 0.187500015 0.5625 1</ambient>
+                    </material>
+                </visual>
+                <visual name="link_4_fixed_joint_lump__tool_shaft_visual_visual_1">
+                    <pose>0.074999999999999997 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.14999999999999999</length>
+                            <radius>0.044999999999999998</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.099999994 0.37500003 1 1</diffuse>
+                        <ambient>0.099999994 0.37500003 1 1</ambient>
+                    </material>
+                </visual>
+                <visual name="link_4_fixed_joint_lump__vacuum_body_visual_visual_2">
+                    <pose>0.19650000000000001 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.092999999999999999</length>
+                            <radius>0.037999999999999999</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>0.099999994 0.099999994 0.099999994 1</diffuse>
+                        <ambient>0.099999994 0.099999994 0.099999994 1</ambient>
+                    </material>
+                </visual>
+                <visual name="link_4_fixed_joint_lump__vacuum_cup_visual_visual_3">
+                    <pose>0.253 0 0 0 1.5707963267948966 0</pose>
+                    <geometry>
+                        <cylinder>
+                            <length>0.02</length>
+                            <radius>0.050000000000000003</radius>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <diffuse>1 0.099999994 0.099999994 1</diffuse>
+                        <ambient>1 0.099999994 0.099999994 1</ambient>
+                    </material>
+                </visual>
+                <gravity>false</gravity>
+            </link>
+            <static>false</static>
+            <frame name="shoulder_transform" attached_to="link_1">
+                <pose>0 0 0.14999999999999999 1.5707963267948959 0 0</pose>
+            </frame>
+            <frame name="shoulder_frame" attached_to="shoulder_transform">
+                <pose>0 0 0 0 0 0</pose>
+            </frame>
+            <frame name="tcp_joint" attached_to="link_4">
+                <pose>0.26300000000000001 0 0 0 0 0</pose>
+            </frame>
+            <frame name="tcp" attached_to="tcp_joint">
+                <pose>0 0 0 0 0 0</pose>
+            </frame>
+            <pose>0 0 0 0 0 0</pose>
+            <self_collide>false</self_collide>
+            <joint name="base_anchor" type="fixed">
+                <parent>world</parent>
+                <child>base_link</child>
+            </joint>
+            <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+                <joint_name>joint_1</joint_name>
+                <initial_position>0</initial_position>
+                <use_velocity_commands>true</use_velocity_commands>
+                <cmd_max>0.6</cmd_max>
+                <cmd_min>-0.6</cmd_min>
+                <topic>/challenge5/joint_1/cmd_pos</topic>
+            </plugin>
+            <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+                <joint_name>joint_2</joint_name>
+                <initial_position>0</initial_position>
+                <use_velocity_commands>true</use_velocity_commands>
+                <cmd_max>0.6</cmd_max>
+                <cmd_min>-0.6</cmd_min>
+                <topic>/challenge5/joint_2/cmd_pos</topic>
+            </plugin>
+            <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+                <joint_name>joint_3</joint_name>
+                <initial_position>0</initial_position>
+                <use_velocity_commands>true</use_velocity_commands>
+                <cmd_max>0.6</cmd_max>
+                <cmd_min>-0.6</cmd_min>
+                <topic>/challenge5/joint_3/cmd_pos</topic>
+            </plugin>
+            <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+                <joint_name>joint_4</joint_name>
+                <initial_position>0</initial_position>
+                <use_velocity_commands>true</use_velocity_commands>
+                <cmd_max>0.6</cmd_max>
+                <cmd_min>-0.6</cmd_min>
+                <topic>/challenge5/joint_4/cmd_pos</topic>
+            </plugin>
+            <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+                <joint_name>joint_1</joint_name>
+                <joint_name>joint_2</joint_name>
+                <joint_name>joint_3</joint_name>
+                <joint_name>joint_4</joint_name>
+            </plugin>
+        </model>
+    </world>
+</sdf>

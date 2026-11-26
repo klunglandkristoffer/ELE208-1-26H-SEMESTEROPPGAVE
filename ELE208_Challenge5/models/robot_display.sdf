@@ -1,0 +1,297 @@
+<sdf version='1.11'>
+  <model name='challenge5_robot'>
+    <link name='base_link'>
+      <inertial>
+        <pose>-0.049999905054412548 -0.2905357182936002 0.30457871501020778 0 0 0</pose>
+        <mass>6</mass>
+        <inertia>
+          <ixx>1.386994588585206</ixx>
+          <ixy>-0.037396578744951413</ixy>
+          <ixz>-0.01721896330617018</ixz>
+          <iyy>0.88508729576141643</iyy>
+          <iyz>0.37786159442925749</iyz>
+          <izz>0.58190724393963789</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_fixed_joint_lump__base_ring_collision_collision'>
+        <pose>0 0 0.012500000000000001 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.025000000000000001</length>
+            <radius>0.11</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__rotating_base_collision_collision_1'>
+        <pose>0 0 0.055 0 0 -1.5707959999999999</pose>
+        <geometry>
+          <cylinder>
+            <length>0.059999999999999998</length>
+            <radius>0.089999999999999997</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__base_column_collision_collision_2'>
+        <pose>0 0 0.11749999999999999 0 0 -1.5707959999999999</pose>
+        <geometry>
+          <cylinder>
+            <length>0.064999999999999988</length>
+            <radius>0.044999999999999998</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__shoulder_housing_collision_collision_3'>
+        <pose>-0.049999999999997331 -1.6339744834947819e-08 0.14999999999999999 1.5707963267948957 -1.0821043267948971 -1.5707959999999999</pose>
+        <geometry>
+          <cylinder>
+            <length>0.25</length>
+            <radius>0.074999999999999997</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__upper_arm_collision_collision_4'>
+        <pose>-0.099999918686940942 -0.2488198717818555 0.61796227162995332 0.4886919999999999 6.5875936064784077e-17 3.2679489641356977e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>1.0600000000000001</length>
+            <radius>0.044999999999999998</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__elbow_housing_collision_collision_5'>
+        <pose>-0.049999837373889973 -0.49763969454447649 1.0859245432599069 1.5707963267948948 1.4137166732051034 -1.5707960000000025</pose>
+        <geometry>
+          <cylinder>
+            <length>0.25</length>
+            <radius>0.074999999999999997</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__forearm_collision_collision_6'>
+        <pose>1.8307490390334641e-07 -0.56021347248196596 0.69084920833028851 2.9845130000000002 3.1874571437545713e-16 3.2679489660472504e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>0.80000000000000004</length>
+            <radius>0.044999999999999998</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__wrist_housing_collision_collision_7'>
+        <pose>-0.049999796476296821 -0.62278728309894504 0.29577387340067052 3.1415919803846899 1.5707963267948966 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.25</length>
+            <radius>0.074999999999999997</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__tool_shaft_collision_collision_8'>
+        <pose>-0.099999796476302638 -0.6227872734579244 0.22077387340067511 -3.1415923071795868 2.3551383678209817e-16 3.2679489669896286e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>0.14999999999999999</length>
+            <radius>0.044999999999999998</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__vacuum_body_collision_collision_9'>
+        <pose>-0.099999796476316405 -0.62278723136908432 0.099273873400681931 -3.1415923071795868 2.3551383678209817e-16 3.2679489669896286e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>0.092999999999999999</length>
+            <radius>0.037999999999999999</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__vacuum_cup_collision_collision_10'>
+        <pose>-0.099999796476322844 -0.62278721179690777 0.042773873400685503 -3.1415923071795868 2.3551383678209817e-16 3.2679489669896286e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>0.02</length>
+            <radius>0.050000000000000003</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='base_link_fixed_joint_lump__base_ring_visual_visual'>
+        <pose>0 0 0.012500000000000001 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.025000000000000001</length>
+            <radius>0.11</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.4375 0.474999994 0.524999976 1</diffuse>
+          <ambient>0.4375 0.474999994 0.524999976 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__rotating_base_visual_visual_1'>
+        <pose>0 0 0.055 0 0 -1.5707959999999999</pose>
+        <geometry>
+          <cylinder>
+            <length>0.059999999999999998</length>
+            <radius>0.089999999999999997</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.049999997 0.187500015 0.5625 1</diffuse>
+          <ambient>0.049999997 0.187500015 0.5625 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__base_column_visual_visual_2'>
+        <pose>0 0 0.11749999999999999 0 0 -1.5707959999999999</pose>
+        <geometry>
+          <cylinder>
+            <length>0.064999999999999988</length>
+            <radius>0.044999999999999998</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.099999994 0.37500003 1 1</diffuse>
+          <ambient>0.099999994 0.37500003 1 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__shoulder_housing_visual_visual_3'>
+        <pose>-0.049999999999997331 -1.6339744834947819e-08 0.14999999999999999 1.5707963267948957 -1.0821043267948971 -1.5707959999999999</pose>
+        <geometry>
+          <cylinder>
+            <length>0.25</length>
+            <radius>0.074999999999999997</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.049999997 0.187500015 0.5625 1</diffuse>
+          <ambient>0.049999997 0.187500015 0.5625 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__upper_arm_visual_visual_4'>
+        <pose>-0.099999918686940942 -0.2488198717818555 0.61796227162995332 0.4886919999999999 6.5875936064784077e-17 3.2679489641356977e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>1.0600000000000001</length>
+            <radius>0.044999999999999998</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.099999994 0.37500003 1 1</diffuse>
+          <ambient>0.099999994 0.37500003 1 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__elbow_housing_visual_visual_5'>
+        <pose>-0.049999837373889973 -0.49763969454447649 1.0859245432599069 1.5707963267948948 1.4137166732051034 -1.5707960000000025</pose>
+        <geometry>
+          <cylinder>
+            <length>0.25</length>
+            <radius>0.074999999999999997</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.049999997 0.187500015 0.5625 1</diffuse>
+          <ambient>0.049999997 0.187500015 0.5625 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__forearm_visual_visual_6'>
+        <pose>1.8307490390334641e-07 -0.56021347248196596 0.69084920833028851 2.9845130000000002 3.1874571437545713e-16 3.2679489660472504e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>0.80000000000000004</length>
+            <radius>0.044999999999999998</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.099999994 0.37500003 1 1</diffuse>
+          <ambient>0.099999994 0.37500003 1 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__wrist_housing_visual_visual_7'>
+        <pose>-0.049999796476296821 -0.62278728309894504 0.29577387340067052 3.1415919803846899 1.5707963267948966 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.25</length>
+            <radius>0.074999999999999997</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.049999997 0.187500015 0.5625 1</diffuse>
+          <ambient>0.049999997 0.187500015 0.5625 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__tool_shaft_visual_visual_8'>
+        <pose>-0.099999796476302638 -0.6227872734579244 0.22077387340067511 -3.1415923071795868 2.3551383678209817e-16 3.2679489669896286e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>0.14999999999999999</length>
+            <radius>0.044999999999999998</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.099999994 0.37500003 1 1</diffuse>
+          <ambient>0.099999994 0.37500003 1 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__vacuum_body_visual_visual_9'>
+        <pose>-0.099999796476316405 -0.62278723136908432 0.099273873400681931 -3.1415923071795868 2.3551383678209817e-16 3.2679489669896286e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>0.092999999999999999</length>
+            <radius>0.037999999999999999</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.099999994 0.099999994 0.099999994 1</diffuse>
+          <ambient>0.099999994 0.099999994 0.099999994 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__vacuum_cup_visual_visual_10'>
+        <pose>-0.099999796476322844 -0.62278721179690777 0.042773873400685503 -3.1415923071795868 2.3551383678209817e-16 3.2679489669896286e-07</pose>
+        <geometry>
+          <cylinder>
+            <length>0.02</length>
+            <radius>0.050000000000000003</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>1 0.099999994 0.099999994 1</diffuse>
+          <ambient>1 0.099999994 0.099999994 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <static>true</static>
+    <frame name='tcp_joint' attached_to='link_4'>
+      <pose>0.26300000000000001 0 0 0 0 0</pose>
+    </frame>
+    <frame name='tcp' attached_to='tcp_joint'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name='joint_4' attached_to='link_3'>
+      <pose>0.80000000000000004 0 0.10000000000000001 0 0 -0.15707999999999986</pose>
+    </frame>
+    <frame name='link_4' attached_to='joint_4'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name='joint_3' attached_to='link_2'>
+      <pose>1.0600000000000001 0 -0.10000000000000001 0 0 -2.4958209999999998</pose>
+    </frame>
+    <frame name='link_3' attached_to='joint_3'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name='joint_2' attached_to='shoulder_frame'>
+      <pose>0 0 0.10000000000000001 0 0 1.0821043267948971</pose>
+    </frame>
+    <frame name='link_2' attached_to='joint_2'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name='shoulder_transform' attached_to='link_1'>
+      <pose>0 0 0.14999999999999999 1.5707963267948959 0 0</pose>
+    </frame>
+    <frame name='shoulder_frame' attached_to='shoulder_transform'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name='joint_1' attached_to='base_link'>
+      <pose>0 0 0 0 0 -1.5707959999999999</pose>
+    </frame>
+    <frame name='link_1' attached_to='joint_1'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+  </model>
+</sdf>

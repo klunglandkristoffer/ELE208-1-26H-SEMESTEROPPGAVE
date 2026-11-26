@@ -1,0 +1,394 @@
+<?xml version="1.0"?>
+
+
+<!-- ELE208 CHALLENGE 5 - 4 DOF ROBOT                   -->
+
+<!--
+    AI/KI-deklarasjon:
+    Xacro-strukturen, makroene og oppsettet av robotens lenker
+    og ledd er generert med ChatGPT-6.2, basert på gruppens
+    robotdesign i AutoCAD og DH-parametre fra MATLAB.
+
+    Geometriske tilpasninger og implementering av DH-parametrene
+    i URDF er utført med KI-assistanse.
+
+    Masse, treghetsmomenter og leddbegrensninger er foreløpige
+    verdier og er ikke verifisert mot en dynamisk modell.
+
+    Se kommentarer underveis for forklaring av koden,
+    valg av verdier og geometriske tilpasninger.
+-->
+
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="challenge5_robot">
+
+    <!-- Geometriske parametere er oppgitt i meter.
+     L1-L4 og d er bassert på gruppens kinematiske modell.
+     Verdiene defineres her sånn at de enkelt kan endres. -->
+
+    <xacro:property name="L1" value="0.150"/>
+    <xacro:property name="L2" value="1.060"/>
+    <xacro:property name="L3" value="0.800"/>
+    <xacro:property name="L4" value="0.263"/>
+
+    <xacro:property name="d" value="0.100"/>
+    <xacro:property name="arm_r" value="0.045"/>                
+    <xacro:property name="joint_r" value="0.075"/>
+    <xacro:property name="joint_w" value="0.250"/>
+    <!-- Radius på arm og leddhus, samt bredden på leddhuset.
+     Forenklede dimensjoner for visualisering av roboten. -->
+
+    <!-- Argumenter for alternativ visningsstilling -->
+
+    <xacro:arg name="q1" default="0.0"/>
+    <xacro:arg name="q2" default="0.0"/>
+    <xacro:arg name="q3" default="0.0"/>
+    <xacro:arg name="q4" default="0.0"/>
+    <xacro:arg name="joint_mode" default="revolute"/>
+    <!-- Argumenter for robotens fire leddvinkler i radianer.
+     Standardverdiene gir robotens nullkonfigurasjon.
+     joint_mode brukes til å velge mellom roterende
+     og faste ledd for ulike visningsstillinger. -->
+
+    <xacro:property name="q1" value="$(arg q1)"/>
+    <xacro:property name="q2" value="$(arg q2)"/>
+    <xacro:property name="q3" value="$(arg q3)"/>
+    <xacro:property name="q4" value="$(arg q4)"/>
+    <xacro:property name="mode" value="$(arg joint_mode)"/>
+    <!-- Henter argumentene inn som variabler som kan brukes videre i koden -->
+
+
+    <!-- Farger -->
+
+    <xacro:property name="blue"
+                    value="0.08 0.30 0.80 1"/>
+
+    <xacro:property name="dark_blue"
+                    value="0.04 0.15 0.45 1"/>
+
+    <xacro:property name="gray"
+                    value="0.35 0.38 0.42 1"/>
+
+    <xacro:property name="black"
+                    value="0.08 0.08 0.08 1"/>
+
+    <xacro:property name="red"
+                    value="0.85 0.08 0.08 1"/>
+
+    
+    <!-- Makro for sylindriske komponenter.
+     Oppretter visual og collision med samme geometri.
+     Brukes flere steder for å unngå repetisjon av kode. -->
+
+    <xacro:macro name="cylinder_part"
+                 params="name radius length xyz rpy rgba">
+
+        <visual name="${name}_visual">
+
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+
+            <geometry>
+                <cylinder radius="${radius}"
+                          length="${length}"/>
+            </geometry>
+
+            <material name="${name}_material">
+                <color rgba="${rgba}"/>
+            </material>
+
+        </visual>
+
+        <collision name="${name}_collision">
+
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+
+            <geometry>
+                <cylinder radius="${radius}"
+                          length="${length}"/>
+            </geometry>
+
+        </collision>
+
+    </xacro:macro>
+
+    
+    <!-- Makro for foreløpige masse- og treghetsegenskaper.
+     Verdiene er foreslått med KI-assistanse for URDF-import
+     og er ikke beregnet ut fra robotens faktiske dynamikk. -->
+    
+    <xacro:macro name="placeholder_inertia" params="mass">
+
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${mass}"/>
+
+            <inertia ixx="0.01" ixy="0" ixz="0"
+                     iyy="0.01" iyz="0" izz="0.01"/>
+        </inertial>
+
+    </xacro:macro>
+
+    <!-- Makro for robotens ledd.
+     Kobler sammen to lenker og definerer relativ
+     posisjon, orientering og rotasjonsakse.
+     Kan også opprette faste ledd for statisk visualisering. -->
+
+    <xacro:macro name="robot_joint"
+                 params="name parent child xyz angle">      <!-- Definerer hvilke lenker leddet forbinder -->
+
+        <joint name="${name}" type="${mode}">
+
+            <parent link="${parent}"/>
+            <child link="${child}"/>
+
+        <!-- Leddets posisjon og orientering relativt til parent-link -->
+            <origin xyz="${xyz}"                          
+                    rpy="0 0 ${angle}"/>                            <!-- Relativ posisjon og orientering -->   
+
+            <xacro:if value="${mode == 'revolute'}">        <!-- Rotasjonsakse og leddgrenser legges kun til for roterende ledd -->
+
+                <axis xyz="0 0 1"/>
+
+                <!-- Foreløpige leddgrenser, hastighet og momentbegrensning.
+                        Ikke basert på dimensjonering av faktiske motorer. -->
+
+                <limit lower="${-pi}"
+                       upper="${pi}"
+                       effort="100"
+                       velocity="2.0"/>
+
+            </xacro:if>
+
+        </joint>
+
+    </xacro:macro>
+
+    <!-- Robotens base_link, som er utgangspunktet for
+     robotens kinematiske kjede.
+     Monteres på basen som er definert i SDF-filen. -->
+
+    <link name="base_link">
+
+        <xacro:cylinder_part
+            name="base_ring"
+            radius="0.11"
+            length="0.025"
+            xyz="0 0 0.0125"
+            rpy="0 0 0"
+            rgba="${gray}"/>
+
+        <xacro:placeholder_inertia mass="1.0"/>
+
+    </link>
+
+    <!-- Ledd 1 roterer roboten rundt den vertikale z-aksen -->
+
+    <xacro:robot_joint
+        name="joint_1"
+        parent="base_link"
+        child="link_1"
+        xyz="0 0 0"
+        angle="${float(q1)}"/>
+
+    <link name="link_1">
+
+        <xacro:cylinder_part
+            name="rotating_base"
+            radius="0.09"
+            length="0.06"
+            xyz="0 0 0.055"
+            rpy="0 0 0"
+            rgba="${dark_blue}"/>
+
+        
+        <!-- Vertikal del av roboten opp mot skulderleddet.
+     Tilpasses L1 slik at total høyde samsvarer med DH-modellen. -->
+
+        <xacro:cylinder_part
+            name="base_column"
+            radius="${arm_r}"
+            length="${L1-0.085}"
+            xyz="0 0 ${(L1+0.085)/2}"
+            rpy="0 0 0"
+            rgba="${blue}"/>
+
+        <xacro:placeholder_inertia mass="1.0"/>
+
+    </link>
+
+    <!-- Fast transformasjon basert på DH-parametrene for ledd 1.
+     Translasjon L1 langs z-aksen og rotasjon pi/2 rundt x-aksen.
+     Dette gir riktig orientering på skulderleddets rotasjonsakse. -->
+
+    <link name="shoulder_frame"/>
+
+    <joint name="shoulder_transform" type="fixed">      <!-- Overføring av DH-transformasjonene til URDF-strukturen
+                                                                    er utført med KI-assistanse. -->
+
+        <parent link="link_1"/>
+        <child link="shoulder_frame"/>
+
+        <origin xyz="0 0 ${L1}"
+                rpy="${pi/2} 0 0"/>
+
+    </joint>
+
+    <!-- Skulderleddet har en DH-offset på pi/2.
+     Overarmen peker derfor oppover i nullkonfigurasjonen.
+     Leddet forskyves med d langs lokal z-akse. -->
+
+    <xacro:robot_joint
+        name="joint_2"
+        parent="shoulder_frame"
+        child="link_2"
+        xyz="0 0 ${d}"
+        angle="${float(q2)+pi/2}"/>
+
+    <link name="link_2">
+
+        <!-- Skulderens leddhus -->
+
+        <xacro:cylinder_part
+            name="shoulder_housing"
+            radius="${joint_r}"
+            length="${joint_w}"
+            xyz="0 0 ${-d/2}"
+            rpy="0 0 0"
+            rgba="${dark_blue}"/>
+
+        <!-- Overarm langs lokal x-akse.
+     Sylinderen roteres pi/2 rundt y-aksen og
+     plasseres med senter ved L2/2. -->
+
+        <xacro:cylinder_part
+            name="upper_arm"
+            radius="${arm_r}"
+            length="${L2}"
+            xyz="${L2/2} 0 0"
+            rpy="0 ${pi/2} 0"
+            rgba="${blue}"/>
+
+        <xacro:placeholder_inertia mass="1.0"/>
+
+    </link>
+
+    <!-- Albueleddet plasseres i enden av overarmen ved L2,
+     med negativ forskyvning d langs lokal z-akse. -->
+
+    <xacro:robot_joint
+        name="joint_3"
+        parent="link_2"
+        child="link_3"
+        xyz="${L2} 0 ${-d}"
+        angle="${float(q3)}"/>
+
+    <link name="link_3">
+
+        <!-- Albuens leddhus -->
+
+        <xacro:cylinder_part
+            name="elbow_housing"
+            radius="${joint_r}"
+            length="${joint_w}"
+            xyz="0 0 ${d/2}"
+            rpy="0 0 0"
+            rgba="${dark_blue}"/>
+
+        <!-- Underarm med lengde L3, samme orienteringsprinsipp
+     som overarmen. -->
+
+        <xacro:cylinder_part
+            name="forearm"
+            radius="${arm_r}"
+            length="${L3}"
+            xyz="${L3/2} 0 0"
+            rpy="0 ${pi/2} 0"
+            rgba="${blue}"/>
+
+        <xacro:placeholder_inertia mass="1.0"/>
+
+    </link>
+
+    <!-- Håndleddet plasseres i enden av underarmen ved L3,
+     med positiv forskyvning d langs lokal z-akse. -->
+
+    <xacro:robot_joint
+        name="joint_4"
+        parent="link_3"
+        child="link_4"
+        xyz="${L3} 0 ${d}"
+        angle="${float(q4)}"/>
+
+    <link name="link_4">
+
+        <!-- Handleddets leddhus -->
+
+        <xacro:cylinder_part
+            name="wrist_housing"
+            radius="${joint_r}"
+            length="${joint_w}"
+            xyz="0 0 ${-d/2}"
+            rpy="0 0 0"
+            rgba="${dark_blue}"/>
+
+        
+        <!-- Skaft og vakuumgriper utgjør til sammen lengden L4.
+     Komponentene plasseres etter hverandre langs lokal x-akse. -->
+
+        <xacro:cylinder_part
+            name="tool_shaft"
+            radius="${arm_r}"
+            length="0.150"
+            xyz="0.075 0 0"
+            rpy="0 ${pi/2} 0"
+            rgba="${blue}"/>
+
+        <!-- Vakuumgriperens hus -->
+
+        <xacro:cylinder_part
+            name="vacuum_body"
+            radius="0.038"
+            length="0.093"
+            xyz="0.1965 0 0"
+            rpy="0 ${pi/2} 0"
+            rgba="${black}"/>
+
+        <!-- Sugekopp -->
+
+        <xacro:cylinder_part
+            name="vacuum_cup"
+            radius="0.05"
+            length="0.020"
+            xyz="0.253 0 0"
+            rpy="0 ${pi/2} 0"
+            rgba="${red}"/>
+
+        <xacro:placeholder_inertia mass="2.0"/>
+
+    </link>
+
+    <!-- TCP plasseres i enden av vakuumgriperen,
+     med en avstand L4 langs lokal x-akse.
+     Fast ledd da TCP ikke har egen frihetsgrad. -->
+
+    <link name="tcp"/>
+
+    <joint name="tcp_joint" type="fixed">
+
+        <parent link="link_4"/>
+        <child link="tcp"/>
+
+        <origin xyz="${L4} 0 0"
+                rpy="0 0 0"/>
+
+    </joint>
+
+    <!-- Roboten defineres som statisk i Gazebo for visualisering
+     uten påvirkning fra gravitasjon og dynamikk. -->
+
+    <gazebo>
+        <static>true</static>
+    </gazebo>
+
+</robot>
